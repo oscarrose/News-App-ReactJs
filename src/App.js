@@ -1,6 +1,7 @@
 import React, {useState,useEffect, Fragment} from "react";
 import NewsArticle from "./components/NewsArticles";
 import Pagination from "./components/Pagination";
+import Search from "./components/Search";
 import "./styles/App.css";
 
 
@@ -28,9 +29,9 @@ function App() {
   return(
     <Fragment>
       
-      <div> 
+      <div className="box-header"> 
         <h1 className="head-text">News</h1>
-        
+        <Search props={dataNews}/> 
       </div>
 
       <div className="all-news">

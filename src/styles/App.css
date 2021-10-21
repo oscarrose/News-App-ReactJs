@@ -18,8 +18,16 @@
     grid-gap: 20px;
   }
   
+  .box-header{
+  
+    display: flex;
+    align-items: flex-end;
+    
+  }
   .head-text {
     margin-top: 30px;
+    color: #ff5100;
+
   }
   
   
@@ -33,18 +41,7 @@
   
   
   }
-  .user {
-    border: 2px solid black;
-    border-radius: 10px;
-    background-color: #b3e3ff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    width: 500px;
-    height: 300px;
-    margin: 20px;
-  }
+  
   
   .paginationBttns {
     width: 80%;
@@ -73,14 +70,15 @@
     background-color: #2b2eff;
   }
   
-  .paginationDisabled a {
-    color: grey;
-    background-color: grey;
+ 
+  .search-title{
+    width: 20%;
+    height: 30px; 
+    padding-left: 15px;
+    border-radius: 5px solid;
+    margin-left: 25px;
+    
   }
-  .App {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    width: 100vw;
-  }
+
+
+  
