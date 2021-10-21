@@ -1,37 +1,39 @@
 import React, {useState,useEffect, Fragment} from "react";
 import NewsArticle from "./components/NewsArticles";
+import Pagination from "./components/Pagination";
 import "./styles/App.css";
 
 
 
 function App() {
 
-  const apiUrl="https://newsapi.org/v2/everything?q=tesla&from=2021-09-20&sortBy=publishedAt&apiKey=1267fb5c15264fe7a074c15ccd129b58"
+  const apiUrl="https://newsapi.org/v2/everything?q=tesla&from=2021-09-21&sortBy=publishedAt&apiKey=1267fb5c15264fe7a074c15ccd129b58"
 
   const[dataNews, setDataNews] = useState();
 
-  const getData=async()=>{
-    const responde=await fetch(apiUrl)
-    const result=await responde.json()
-    setDataNews(result)
-    console.log(dataNews);
-    console.log(result);
-   
-  };
-  
+
   useEffect(()=>{
+    const getData=async()=>{
+      const responde=await fetch(apiUrl)
+      const result=await responde.json()
+      setDataNews(result)
+     
+    };
+    
 
     getData();
-
+   
   },[]);
 
   return(
     <Fragment>
+      
       <div> 
-        <h1>News</h1>
+        <h1 className="head-text">News</h1>
+        
       </div>
 
-      <div>
+      <div className="all-news">
           {
             dataNews 
             ? 
@@ -40,7 +42,10 @@ function App() {
 
             :"Loading"
           }
+         
         </div>
+      <Pagination/>
+      
      
     </Fragment>
   );  
