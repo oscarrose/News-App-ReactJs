@@ -2,31 +2,23 @@ import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
 import "../styles/App.css";
 
-function Pagination ({props}){
-    const [pageNumber, setPageNumber] = useState(0);
+function Pagination (){
+    const [pageNumber, setPageNumber] = useState(1);
   
-    const usersPerPage = 10;
-    const pagesVisited = pageNumber * usersPerPage;
+    const pageCount = Math.ceil(5);
   
-    
-    const pageCount = Math.ceil(1000 / usersPerPage);
-  
-    const changePage = ({ selected }) => {
+    const changePage = ({selected}) => {
       setPageNumber(selected);
+      console.log(pageNumber);
     };
   
     return (
-      <div className="App">
+      <div>
         
         <ReactPaginate
-          previousLabel={"Previous"}
-          nextLabel={"Next"}
           pageCount={pageCount}
           onPageChange={changePage}
           containerClassName={"paginationBttns"}
-          previousLinkClassName={"previousBttn"}
-          nextLinkClassName={"nextBttn"}
-          disabledClassName={"paginationDisabled"}
           activeClassName={"paginationActive"}
         />
       </div>

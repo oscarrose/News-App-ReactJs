@@ -22,6 +22,7 @@
   
     display: flex;
     align-items: flex-end;
+   
     
   }
   .head-text {
@@ -76,13 +77,12 @@
     height: 30px; 
     padding-left: 15px;
     border-radius: 5px solid;
-    margin-left: 25px;
-    
+    margin-left: 25px;    
   }
   .filter-country {
- 
+
     border-radius: 3px solid ;
-    margin-left: 60%;
+    margin-left: 45%;
 
   }
 

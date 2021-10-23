@@ -5,26 +5,34 @@ import Search from "./components/Search";
 import "./styles/App.css";
 
 
-const apiUrl="https://newsapi.org/v2/everything?q=tesla&from=2021-09-21&sortBy=publishedAt&apiKey=1267fb5c15264fe7a074c15ccd129b58";
+const apiUrl="https://newsapi.org/v2/top-headlines?language=es&pageSize=21&apiKey=b5a8298a23464d559d7685059ca45b46";
 
-const countryUs="https://newsapi.org/v2/top-headlines?country=us&apiKey=1267fb5c15264fe7a074c15ccd129b58";
-
-const countryCu="https://newsapi.org/v2/top-headlines?country=cu&apiKey=1267fb5c15264fe7a074c15ccd129b58";
-
-const countryCa="https://newsapi.org/v2/top-headlines?country=ca&apiKey=1267fb5c15264fe7a074c15ccd129b58";
-
-const countryMx="https://newsapi.org/v2/top-headlines?country=mx&apiKey=1267fb5c15264fe7a074c15ccd129b58";
+const key="b5a8298a23464d559d7685059ca45b46";
 
 function App() {
 
 
   const[dataNews, setDataNews] = useState();
-  const [selected, setSelected] =useState("select country...");
+  const [selectedCountry, setSelectedCountry] =useState();
+  const[selectedCategory, setCategorySelected]=useState()
+  const[selectedSortBy, setSortBySelected]=useState()
 
-  const changeSelectOption = (event) => {
-    setSelected(event.target.value);
+
+  const changeSelectCountry = (event) => {
+    setSelectedCountry(event.target.value);
+    console.log(event.target.value);
   };
 
+  const changeSelectSortby = (event) => {
+    setSortBySelected(event.target.value);
+    console.log(event.target.value);
+  };
+  
+  const changeSelectCategory=(event)=>{
+    setCategorySelected(event.target.value);
+    console.log(event.target.value);  
+  };
+ 
   useEffect(()=>{
 
     const getData=async()=>{
@@ -33,55 +41,30 @@ function App() {
       setDataNews(result)
 
     };
-
-    const getDataCountryUs=async()=>{
-      const responde=await fetch(countryUs)
-      const result=await responde.json()
-      setDataNews(result)
-    };
-
-    const getDataCountryAe=async()=>{
-      const responde=await fetch(countryCu)
-      const result=await responde.json()
-      setDataNews(result)
-
-    };
-    const getDataCountryCa=async()=>{
-      const responde=await fetch(countryCa)
-      const result=await responde.json()
-      setDataNews(result)
-
-    };
-
-    const getDataCountryMx=async()=>{
-      const responde=await fetch(countryMx)
-      const result=await responde.json()
-      setDataNews(result)
-
-    };
-    if(selected==="select country..."){
-      getData();
     
-      
-    }else if(selected ==="us") {
-      getDataCountryUs();
-      
-     
-    }else if(selected==="cu"){
-      getDataCountryAe();
-     
+    const getDataFiler=async()=>{
+      const url=("https://newsapi.org/v2/top-headlines?pageSize=21&sortBy="+selectedSortBy+"&category="+selectedCategory+"&country="+selectedCountry+"&apiKey="+key);
 
-    }else if (selected==="ca"){
-      getDataCountryCa();
-   
+      const responde=await fetch(url)
+      const result=await responde.json()
+      setDataNews(result)
+      console.log(url);
+      console.log(responde);
+    
 
-    }else if(selected==="mx"){
-      getDataCountryMx();
-
+    };
+    
+    
+    if((selectedCountry==="us"||"cu" ||"ca"||"mx") &&(selectedCategory==="sports"||"entertainment"||"technology") &&(selectedSortBy==="popularity"||"relevancy")){
+      getDataFiler();
+      console.log("unido" );
+    }else{
+      getData();
+      console.log("solo");
     }
     
 
-  },[selected]);
+  },[selectedCountry,selectedCategory,selectedSortBy]);
  
   return(
     <Fragment>
@@ -92,12 +75,29 @@ function App() {
         <Search props={dataNews}/> 
 
         <div className="filter-country">
-          <select onChange={changeSelectOption}>
-              <option >select country...</option>
-              <option>us</option>
+          <select onChange={changeSelectCountry}>
+              <option value="us">select country</option>
+              <option>sg</option>
               <option>cu</option>
               <option>ca</option>
               <option>mx</option>
+            </select>
+        </div>
+
+        <div>
+          <select onChange={changeSelectCategory}>
+              <option value="general">category</option>
+              <option>sports</option>
+              <option>entertainment</option>
+              <option>technology</option>
+            </select>
+        </div>
+
+        <div>
+          <select onChange={changeSelectSortby}>
+              <option  value="publishedAt">sortBy</option>
+              <option>popularity</option>
+              <option>relevancy</option>
             </select>
         </div>
       </div>
@@ -109,13 +109,12 @@ function App() {
               dataNews.articles.map((news)=>(
               <NewsArticle props={news} key={news.url}/>)) 
                 
-            :"Loading"
+            :"Loading..."
           }
          
         </div>
       <Pagination/>
       
-     
     </Fragment>
   );  
 
