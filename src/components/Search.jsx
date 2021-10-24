@@ -1,55 +1,45 @@
-import React, {useState, Fragment, useEffect} from "react";
+import React, {useState, Fragment} from "react";
 import "../styles/App.css";
+import NewsArticle from "./NewsArticles"
 
-function Search({props}){
-    const[news, setNews]=useState([{props}]);
-    const[searchTitle, setSearchTitle]=useState("");
-    const [loading, setLoading] = useState(false);
+const api="https://newsapi.org/v2/everything?q=";
+const key="&apiKey=b5a8298a23464d559d7685059ca45b46";
 
-  /*  useEffect(() => {
-        const validNews = async () => {
-           
-            if(news){
-                setLoading(true)
-            }else{
-                setLoading(false) 
-            }
-        };
-       
-       validNews();
-    }, []);*/
+function Search(){
+    const[news, setNews]=useState();
+    const[searchTitle, setSearchTitle]=useState();
+    const [error, setError]=useState();
+
+    const  handleSubmit= async(e)=>{
+        e.preventDefault();
+    
+        if(!searchTitle){
+            return setError("Enter a text please");
+        }
+
+        const responde=await fetch(`${api}${searchTitle}`+key)
+        const result=await responde.json();
+
+        if(result.totalResults===0){
+            return setError("No results");
+        }
+        setNews(result, setError(""), setSearchTitle(""))
+      
+    }
 
     return(
         <Fragment>
-            <input type="search" className="search-title" 
-            name="search" placeholder="Search title..." 
-            onChange={(e)=>setSearchTitle(e.target.value)}/>
+            <form className="search-title" onSubmit={handleSubmit}>
+                
+                <input type="search" value={searchTitle}
+                name="search" placeholder="Search" 
+                onChange={(e)=>setSearchTitle(e.target.value)}/>
 
-            {loading ? (
-                <h4>Loading...</h4>
-                ) : (
-                     news
-                     .filter((value)=> {
-                        if (searchTitle === "") {
-                        return value;
-                        } else if (
-                        value.title.toLowerCase().includes(searchTitle.toLowerCase())
-                        ) {
-                            console.log(value)
-                         return value;
-                        }
-                    }).map((itemNews) => 
-                    <h5  key={itemNews.url}>
-                        {itemNews.title}
-                    </h5>)
-                )
-            }
-
+                <p>{error ? error :""}</p>
+            </form>
+        
         </Fragment>
     );
-    
-
-
 
 }
 
