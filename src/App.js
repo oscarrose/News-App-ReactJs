@@ -26,15 +26,13 @@ function App() {
       const responde = await fetch(url);
       const result = await responde.json();
       setDataNews(result);
-      
+      console.log(result);
+     
 
     };
     
-
-    getDataFiler();
-    if(dataNews===[]){
-      return(<h3>Search limit reached</h3>);
-    }
+    
+    getDataFiler();    
    
   }, [selectedCountry, selectedCategory, selectedSortBy,pageNumber]);
 
@@ -127,17 +125,22 @@ function App() {
 
         <div className="all-news">
           {
-            dataNews.articles===undefined
-              
-            ?
-              <h3>{`${dataNews.status}: ${dataNews.message}`}</h3> 
-                
-            :dataNews.articles.map((news) => (
-              <NewsArticle props={news} key={news.url} />))
+            
+            // dataNews.articles.length !==0 
+            // ?
+
+              dataNews.articles !==undefined
+              ?
+                dataNews.articles.map((news) => (
+                <NewsArticle props={news} key={news.url} />))
+
+              :<h3>{`${dataNews.status}: ${dataNews.message}`}</h3> 
+
+            // :<h2>Search limit reached</h2> 
           }
         </div>
         <ReactPaginate
-          pageCount={Math.ceil(15)}
+          pageCount={Math.ceil(10)}
           onPageChange={changePage}
           containerClassName={"paginationBttns"}
           activeClassName={"paginationActive"}
