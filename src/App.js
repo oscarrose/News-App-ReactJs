@@ -1,11 +1,10 @@
 import React, { useState, useEffect, Fragment } from "react";
 import NewsArticle from "./components/NewsArticles";
-import Pagination from "./components/Pagination";
+import ReactPaginate from "react-paginate";
 import "./styles/App.css";
 
-const apiTopheadlines  ="https://newsapi.org/v2/top-headlines?pageSize=21";
+const apiTopheadlines  ="https://newsapi.org/v2/top-headlines?pageSize=12";
 const apiEndpoint="https://newsapi.org/v2/everything?";
-
 const key = "&apiKey=1267fb5c15264fe7a074c15ccd129b58";
 
 function App() {
@@ -16,35 +15,28 @@ function App() {
   const [selectedSortBy, setSortBySelected] = useState("publishedAt");
   const[searchTitle, setSearchTitle]=useState();
   const [error, setError]=useState();
+  const [pageNumber, setPageNumber] = useState(1);
+
 
   useEffect(() => {
-    const getData = async () => {
-      const responde = await fetch(apiTopheadlines+key);
-      const result = await responde.json();
-      setDataNews(result);
-    };
-
+   
     const getDataFiler = async () => {
-      const url =(`${apiTopheadlines }&sortBy=${selectedSortBy}&category=${selectedCategory}&country=${selectedCountry}${key}`);
+      const url =(`${apiTopheadlines}&page=${pageNumber}&sortBy=${selectedSortBy}&category=${selectedCategory}&country=${selectedCountry}${key}`);
 
       const responde = await fetch(url);
       const result = await responde.json();
       setDataNews(result);
-      console.log(url);
-      console.log(responde);
-    };
+      
 
-    if ((selectedCountry === "us" || "cu" || "ca" || "mx") && 
-      (selectedCategory === "sports" || "entertainment" || "technology") &&
-      (selectedSortBy === "popularity" || "relevancy"))
-    {
-      getDataFiler();
-      console.log("unido");
-    }else{
-      getData();
-      console.log("solo");
+    };
+    
+
+    getDataFiler();
+    if(dataNews===[]){
+      return(<h3>Search limit reached</h3>);
     }
-  }, [selectedCountry, selectedCategory, selectedSortBy]);
+   
+  }, [selectedCountry, selectedCategory, selectedSortBy,pageNumber]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,25 +49,40 @@ function App() {
     const result = await responde.json();
 
     if (result.totalResults === 0) {
-      console.log(`${apiEndpoint}q=${searchTitle}${key}`);
+    
       return setError("No results");
       
     }
     if (result.status === "error") {
-      console.log(`${apiEndpoint}q=${searchTitle}${key}`);
+  
       return setError("invalid search");
       
     }
-    console.log(result);
-    console.log(`${apiEndpoint}q=${searchTitle}${key}`);
-    setDataNews(result, setError(""), setSearchTitle(""));
+   
+    setDataNews(result, setError(""), 
+    setSearchTitle(""),);
+  };
+
+  const changePage = async({selected}) => {
+    setPageNumber(selected+1);
+    console.log(pageNumber);
+  };
+  const getData = async () => {
+    const responde = await fetch(`${apiTopheadlines}&category=${selectedCategory}${key}`);
+    const result = await responde.json();
+    setDataNews(result, setPageNumber(1));
   };
 
   if (dataNews) {
     return (
       <Fragment>
         <div className="box-header">
-          <h1 className="head-text">News</h1>
+
+          <h1 className="head-text" style={{cursor:'pointer'}}
+          onClick={getData}>
+            News
+          
+          </h1>
           <form className="search-title" onSubmit={handleSubmit}>
             <input
               type="search"
@@ -84,7 +91,6 @@ function App() {
               placeholder="Search"
               onChange={(e) => setSearchTitle(e.target.value)}
             />
-
             <p>{error ? error : ""}</p>
           </form>
 
@@ -121,25 +127,28 @@ function App() {
 
         <div className="all-news">
           {
-             dataNews.articles.map((news) => (
-              <NewsArticle props={news} key={news.url} />
-            ))
+            dataNews.articles===undefined
               
-           
-            // dataNews 
-            // ? 
-             
-               
-            // :<h3>Loading...</h3>
+            ?
+              <h3>{`${dataNews.status}: ${dataNews.message}`}</h3> 
+                
+            :dataNews.articles.map((news) => (
+              <NewsArticle props={news} key={news.url} />))
           }
         </div>
-        <Pagination />
+        <ReactPaginate
+          pageCount={Math.ceil(15)}
+          onPageChange={changePage}
+          containerClassName={"paginationBttns"}
+          activeClassName={"paginationActive"}
+        
+        />
       </Fragment>
     );
   } else {
     return (
       <div className="box-header">
-        <h1 className="head-text">Loading...</h1>
+        <h1 style={{padding:80}}>Loading...</h1>
       </div>
     );
   }

@@ -22,7 +22,7 @@ const styles = {
 
 function NewsArticle({props}) {
   const classes  = styles;
-  const[img, setimg] = useState(props.urlToImage);
+  const[img] = useState(props.urlToImage);
 
   const redirectNews = () =>{ 
     window.location.href =props.url;
