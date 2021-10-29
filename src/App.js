@@ -1,40 +1,37 @@
 import React, { useState, useEffect, Fragment } from "react";
 import NewsArticle from "./components/NewsArticles";
 import ReactPaginate from "react-paginate";
+import "antd/dist/antd.css";
 import "./styles/App.css";
+import AppLoading from "./components/loadingApp";
+import { country, category, sortby } from "./resource/requestData";
+import { Select, Input } from "antd";
 
-const apiTopheadlines  ="https://newsapi.org/v2/top-headlines?pageSize=12";
-const apiEndpoint="https://newsapi.org/v2/everything?";
-const key = "&apiKey=1267fb5c15264fe7a074c15ccd129b58";
+const apiTopheadlines = "https://newsapi.org/v2/top-headlines?pageSize=12";
+const apiEndpoint = "https://newsapi.org/v2/everything?";
+const key = "&apiKey=b5a8298a23464d559d7685059ca45b46";
 
 function App() {
-
   const [dataNews, setDataNews] = useState();
   const [selectedCountry, setSelectedCountry] = useState("us");
   const [selectedCategory, setCategorySelected] = useState("general");
   const [selectedSortBy, setSortBySelected] = useState("publishedAt");
-  const[searchTitle, setSearchTitle]=useState();
-  const [error, setError]=useState();
+  const [searchTitle, setSearchTitle] = useState();
+  const [error, setError] = useState();
   const [pageNumber, setPageNumber] = useState(1);
 
-
   useEffect(() => {
-   
     const getDataFiler = async () => {
-      const url =(`${apiTopheadlines}&page=${pageNumber}&sortBy=${selectedSortBy}&category=${selectedCategory}&country=${selectedCountry}${key}`);
+      const url = `${apiTopheadlines}&page=${pageNumber}&sortBy=${selectedSortBy}&category=${selectedCategory}&country=${selectedCountry}${key}`;
 
       const responde = await fetch(url);
       const result = await responde.json();
       setDataNews(result);
       console.log(result);
-     
-
     };
-    
-    
-    getDataFiler();    
-   
-  }, [selectedCountry, selectedCategory, selectedSortBy,pageNumber]);
+
+    getDataFiler();
+  }, [selectedCountry, selectedCategory, selectedSortBy, pageNumber]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,46 +40,42 @@ function App() {
       return setError("Enter a text please");
     }
 
-    const responde = await fetch(`${apiEndpoint}q=${searchTitle}${key}`);
+    const responde = await fetch(
+      `${apiEndpoint}q=${searchTitle}&sortBy=${sortby}${key}`
+    );
     const result = await responde.json();
 
     if (result.totalResults === 0) {
-    
       return setError("No results");
-      
     }
     if (result.status === "error") {
-  
       return setError("invalid search");
-      
     }
-   
-    setDataNews(result, setError(""), 
-    setSearchTitle(""),);
+
+    setDataNews(result, setError(""), setSearchTitle(""));
   };
 
-  const changePage = async({selected}) => {
-    setPageNumber(selected+1);
+  const changePage = async ({ selected }) => {
+    setPageNumber(selected + 1);
     console.log(pageNumber);
   };
-  const getData = async () => {
-    const responde = await fetch(`${apiTopheadlines}&category=${selectedCategory}${key}`);
+  const getNews = async () => {
+    const responde = await fetch(`${apiTopheadlines}&category=general${key}`);
     const result = await responde.json();
-    setDataNews(result, setPageNumber(1));
+    setDataNews(result);
   };
 
   if (dataNews) {
     return (
       <Fragment>
         <div className="box-header">
-
-          <h1 className="head-text" style={{cursor:'pointer'}}
-          onClick={getData}>
+          <h1 className="head-text" onClick={getNews}>
             News
-          
           </h1>
+
           <form className="search-title" onSubmit={handleSubmit}>
-            <input
+            <Input
+              style={{ width: 180, marginLeft: 155 }}
               type="search"
               value={searchTitle}
               name="search"
@@ -92,66 +85,57 @@ function App() {
             <p>{error ? error : ""}</p>
           </form>
 
-          <div className="filter-country">
-            <select onChange={(event)=>{setSelectedCountry
-              (event.target.value)}}>
-                <option value="us">select country</option>
-                <option>sg</option>
-                <option>cu</option>
-                <option>ca</option>
-                <option>mx</option>
-            </select>
-          </div>
+          <Select
+            style={{ width: 180, marginLeft: 80 }}
+            options={country}
+            placeholder="select one country"
+            onChange={(value) => {
+              setSelectedCountry(value);
+            }}
+          />
 
-          <div>
-            <select onChange={(event)=>{setCategorySelected
-              (event.target.value)}}>
-                  <option value="general">category</option>
-                  <option>sports</option>
-                  <option>entertainment</option>
-                  <option>technology</option>
-            </select>
-          </div>
+          <Select
+            style={{ width: 180 }}
+            options={category}
+            placeholder="select one category"
+            onChange={(value) => {
+              setCategorySelected(value);
+            }}
+          />
 
-          <div>
-            <select onChange={(event)=>{ setSortBySelected
-              (event.target.value)}}>
-                <option value="publishedAt">sortBy</option>
-                <option>popularity</option>
-                <option>relevancy</option>
-            </select>
-          </div>
+          <Select
+            options={sortby}
+            style={{ width: 180, marginLeft: -80 }}
+            placeholder="select one sortby"
+            onChange={(value) => {
+              setSortBySelected(value);
+            }}
+          />
         </div>
 
         <div className="all-news">
-          {
-            
-            // dataNews.articles.length !==0 
-            // ?
-
-              dataNews.articles !==undefined
-              ?
-                dataNews.articles.map((news) => (
-                <NewsArticle props={news} key={news.url} />))
-
-              :<h3>{`${dataNews.status}: ${dataNews.message}`}</h3> 
-
-            // :<h2>Search limit reached</h2> 
-          }
+          {dataNews.articles === undefined ? (
+            <h3>{`${dataNews.status}: ${dataNews.message}`}</h3>
+          ) : (
+            dataNews.articles.map((news) => (
+              <NewsArticle props={news} key={news.url} />
+            ))
+          )}
         </div>
+
         <ReactPaginate
-          pageCount={Math.ceil(10)}
+          pageCount={Math.ceil(8)}
           onPageChange={changePage}
           containerClassName={"paginationBttns"}
           activeClassName={"paginationActive"}
-        
         />
       </Fragment>
     );
   } else {
     return (
-      <div className="box-header">
-        <h1 style={{padding:80}}>Loading...</h1>
+      <div className="App-header">
+        <AppLoading />
+        <h1 style={{ padding: 80 }}>Loading...</h1>
       </div>
     );
   }

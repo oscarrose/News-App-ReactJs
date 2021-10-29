@@ -6,7 +6,8 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
-import imagedefault from "../styles/default2.jpg";
+import imagedefault from "../resource/default2.jpg";
+
 
 
 
@@ -37,11 +38,7 @@ function NewsArticle({props}) {
           alt="news image"
           className={classes.media}
           height="140"
-          image={img 
-                  ?
-                    img
-                  :imagedefault      
-                }
+          image={img ??imagedefault}
           
           
         />

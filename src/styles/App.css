@@ -3,12 +3,13 @@
     padding: 0;
     box-sizing: border-box;
   }
+ 
   
   body {
     font-family: inter;
     width: 80%;
     margin: 0 auto;
-    background: rgb(251, 254, 255);
+    background:"white";
   }
   
   .all-news {
@@ -19,16 +20,19 @@
   }
   
   .box-header{
-  
-    display: flex;
-    align-items: flex-end;
+    margin: 50px auto;
+    display: grid;
+    grid-template-columns: repeat(5, 22%);
+    grid-gap: 10px;
    
     
   }
   .head-text {
-    margin-top: 30px;
+    margin-top: -20px;
     color: #ff5100;
-
+    cursor:pointer;
+    font-size:40px;
+    
   }
   
   
@@ -39,10 +43,8 @@
   .news-published {
     color: rgb(122, 122, 122);
     padding-left: 20px;
-  
-  
+   
   }
-  
   
   .paginationBttns {
     width: 80%;
@@ -71,20 +73,17 @@
     background-color: #2b2eff;
   }
   
- 
-  .search-title{
-    width: 20%;
-    height: 30px; 
-    padding-left: 15px;
-    border-radius: 5px solid;
-    margin-left: 25px;    
-  }
-  .filter-country {
 
-    border-radius: 3px solid ;
-    margin-left: 45%;
-
+  .App-header {
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    
   }
+  
 
 
 
