@@ -7,9 +7,9 @@ import AppLoading from "./components/loadingApp";
 import { country, category, sortby } from "./resource/requestData";
 import { Select, Input } from "antd";
 
-const apiTopheadlines = "https://newsapi.org/v2/top-headlines?pageSize=12";
-const apiEndpoint = "https://newsapi.org/v2/everything?";
-const key = "&apiKey=b5a8298a23464d559d7685059ca45b46";
+const apiTopheadlines =process.env.REACT_APP_API_TOPHEADLINES ;
+const apiEndpoint = process.env.REACT_APP_API_ENDPOINT;
+const key = process.env.REACT_APP_KEY;
 
 function App() {
   const [dataNews, setDataNews] = useState();
@@ -27,7 +27,7 @@ function App() {
       const responde = await fetch(url);
       const result = await responde.json();
       setDataNews(result);
-      console.log(result);
+     
     };
 
     getDataFiler();
